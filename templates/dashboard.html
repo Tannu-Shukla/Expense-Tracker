@@ -11,16 +11,20 @@
 <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
 </head>
 <body>
+<div class="mobile-topbar">
+  <div class="mtb-brand"><span class="mark">₹</span> ExpenseFlow</div>
+  <a class="mtb-signout" href="{{ url_for('logout') }}">Sign out</a>
+</div>
 <div class="app-shell">
 
   <aside class="sidebar">
     <div class="brand"><span class="mark">₹</span> ExpenseFlow</div>
 
     <nav class="nav-group">
-      <div class="nav-item active" data-view="dashboard"><span class="ic">🏠</span> Dashboard</div>
-      <div class="nav-item" data-view="add"><span class="ic">➕</span> Add Expense</div>
-      <div class="nav-item" data-view="all"><span class="ic">📋</span> All Expenses</div>
-      <div class="nav-item" data-view="reports"><span class="ic">📊</span> Reports</div>
+      <div class="nav-item active" data-view="dashboard"><span class="ic">🏠</span><span class="label">Dashboard</span></div>
+      <div class="nav-item" data-view="add"><span class="ic">➕</span><span class="label">Add Expense</span></div>
+      <div class="nav-item" data-view="all"><span class="ic">📋</span><span class="label">All Expenses</span></div>
+      <div class="nav-item" data-view="reports"><span class="ic">📊</span><span class="label">Reports</span></div>
     </nav>
 
     <div class="sidebar-spacer"></div>
