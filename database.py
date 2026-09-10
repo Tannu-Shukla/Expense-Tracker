@@ -7,7 +7,7 @@ import psycopg2
 import psycopg2.extras
 from contextlib import contextmanager
 from datetime import date
-from config import DB_CONFIG
+from config import DB_CONFIG, DATABASE_URL
 
 
 class DatabaseError(Exception):
@@ -18,11 +18,16 @@ class DatabaseError(Exception):
 def get_connection():
     conn = None
     try:
-        conn = psycopg2.connect(
-            host=DB_CONFIG["host"], port=DB_CONFIG["port"],
-            dbname=DB_CONFIG["database"], user=DB_CONFIG["user"],
-            password=DB_CONFIG["password"],
-        )
+        if DATABASE_URL:
+            # Hosted setup (Render/Neon etc.) — a full connection string was provided.
+            conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        else:
+            # Local setup — individual fields from config.py.
+            conn = psycopg2.connect(
+                host=DB_CONFIG["host"], port=DB_CONFIG["port"],
+                dbname=DB_CONFIG["database"], user=DB_CONFIG["user"],
+                password=DB_CONFIG["password"],
+            )
         yield conn
     except psycopg2.OperationalError as e:
         raise DatabaseError(

@@ -11,6 +11,7 @@ Setup (one-time):
 
 from functools import wraps
 from datetime import timedelta, datetime
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -253,4 +254,9 @@ def _validate_expense(data):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Locally: FLASK_DEBUG unset -> debug off by default too, but you can
+    # run `FLASK_DEBUG=1 python app.py` while developing if you want it back.
+    # On Render: PORT is set automatically, and gunicorn is used instead of this block.
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=debug_mode, host="0.0.0.0", port=port)
