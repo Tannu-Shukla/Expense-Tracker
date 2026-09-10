@@ -1,0 +1,189 @@
+/* Split-screen auth layout — the left panel carries a living aurora
+   gradient that drifts continuously, plus an animated flow-line. */
+
+.auth-screen {
+  display: flex;
+  min-height: 100vh;
+}
+
+.auth-brand {
+  flex: 0 0 42%;
+  background: var(--void);
+  color: var(--paper);
+  padding: 56px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- living aurora: three soft blobs drifting on independent loops --- */
+.auth-brand::before,
+.auth-brand::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.auth-brand::before {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, var(--violet-500), transparent 70%);
+  top: -140px; left: -100px;
+  animation: drift-a 16s ease-in-out infinite;
+}
+.auth-brand::after {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #d946ef, transparent 70%);
+  bottom: -160px; right: -80px;
+  animation: drift-b 20s ease-in-out infinite;
+}
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.15); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -30px) scale(1.1); }
+}
+
+.aurora-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at 30% 20%, rgba(124, 58, 237, 0.18), transparent 60%);
+  pointer-events: none;
+  animation: pulse-glow 8s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.auth-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  z-index: 1;
+}
+.auth-wordmark .mark {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--spark), #f6c453);
+  color: #3a2a05;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.auth-hero {
+  z-index: 1;
+  max-width: 420px;
+}
+.auth-hero h1 {
+  font-size: 40px;
+  line-height: 1.15;
+  color: var(--paper);
+  font-weight: 600;
+}
+.auth-hero p {
+  margin-top: 16px;
+  color: #bcb3da;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.auth-graphic {
+  z-index: 1;
+  margin-top: 32px;
+}
+/* the flow-line "breathes" — a soft traveling dash, evoking money moving */
+.flow-path {
+  stroke-dasharray: 8 10;
+  animation: flow-run 2.4s linear infinite;
+}
+@keyframes flow-run {
+  to { stroke-dashoffset: -36; }
+}
+.flow-dot {
+  animation: dot-pulse 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes dot-pulse {
+  0%, 100% { r: 4; opacity: 1; }
+  50% { r: 6; opacity: 0.6; }
+}
+
+.auth-foot {
+  z-index: 1;
+  font-size: 12.5px;
+  color: #8479a0;
+}
+
+.auth-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background:
+    radial-gradient(500px circle at 85% 15%, rgba(124, 58, 237, 0.06), transparent 60%),
+    var(--paper);
+}
+
+.auth-form-box {
+  width: 100%;
+  max-width: 380px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: auth-rise 0.5s ease forwards;
+}
+
+@keyframes auth-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-form-box h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+.auth-form-box .sub {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.auth-switch {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+.auth-switch a {
+  color: var(--violet-600);
+  font-weight: 700;
+}
+.auth-switch a:hover { text-decoration: underline; }
+
+.remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -6px 0 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.remember-row label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.remember-row input[type="checkbox"] { accent-color: var(--violet-500); }
+
+@media (max-width: 860px) {
+  .auth-screen { flex-direction: column; }
+  .auth-brand { flex: none; padding: 36px 28px; }
+  .auth-hero h1 { font-size: 30px; }
+  .auth-form-side { padding: 36px 24px 60px; }
+}

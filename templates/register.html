@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account — ExpenseFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+<div class="auth-screen">
+
+  <div class="auth-brand">
+    <div class="aurora-glow"></div>
+    <div class="auth-wordmark"><span class="mark">₹</span> ExpenseFlow</div>
+
+    <div class="auth-hero">
+      <h1>Start a ledger that remembers everything.</h1>
+      <p>One account, every expense, from any device you sign into. Nothing you log is ever lost between visits.</p>
+      <div class="auth-graphic">
+        <svg width="220" height="70" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="flow-path" d="M2 55 L35 40 L65 48 L95 20 L130 30 L165 8 L214 18"
+                stroke="#f0b429" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle class="flow-dot" cx="214" cy="18" r="4" fill="#f0b429"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="auth-foot">Takes less than a minute.</div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-form-box">
+      <h2>Create your account</h2>
+      <p class="sub">Free, and it stays yours.</p>
+
+      {% if error %}
+        <div class="banner banner-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('register') }}">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" value="{{ username }}" required autofocus minlength="3">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="{{ email }}" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="6">
+          <span class="hint">At least 6 characters.</span>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

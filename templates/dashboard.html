@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpenseFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="mark">₹</span> ExpenseFlow</div>
+
+    <nav class="nav-group">
+      <div class="nav-item active" data-view="dashboard"><span class="ic">🏠</span> Dashboard</div>
+      <div class="nav-item" data-view="add"><span class="ic">➕</span> Add Expense</div>
+      <div class="nav-item" data-view="all"><span class="ic">📋</span> All Expenses</div>
+      <div class="nav-item" data-view="reports"><span class="ic">📊</span> Reports</div>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="user-chip">
+      <div class="avatar">{{ username[0]|upper }}</div>
+      <div style="flex:1">
+        <div class="uname">{{ username }}</div>
+        <a class="logout" href="{{ url_for('logout') }}">Sign out</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ============================ DASHBOARD VIEW ============================ -->
+    <section class="view active" id="view-dashboard">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <div class="today" id="today-label"></div>
+      </div>
+
+      <div class="stat-row">
+        <div class="card stat-card">
+          <div class="stat-label">Spent today</div>
+          <div class="stat-num numeral" data-stat="total_today">₹0</div>
+        </div>
+        <div class="card stat-card accent">
+          <div class="stat-label">This month</div>
+          <div class="stat-num numeral" data-stat="total_month">₹0</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">All time</div>
+          <div class="stat-num numeral" data-stat="total_all">₹0</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Total entries</div>
+          <div class="stat-num numeral" data-stat="count_all">0</div>
+        </div>
+      </div>
+
+      <div class="flow-strip" aria-hidden="true"></div>
+
+      <div class="section-head">
+        <h2>Recent expenses</h2>
+        <button class="btn btn-gold" data-goto="add">+ Add expense</button>
+      </div>
+      <div class="card table-card">
+        <table class="ledger">
+          <thead>
+            <tr><th>Date</th><th>Title</th><th>Category</th><th>Amount</th></tr>
+          </thead>
+          <tbody id="recent-body"></tbody>
+        </table>
+        <div class="empty-state" id="recent-empty" style="display:none;">
+          <div class="big">🧾</div>
+          Nothing logged yet — add your first expense to see it here.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= ADD/EDIT VIEW ============================= -->
+    <section class="view" id="view-add">
+      <div class="page-header"><h1 id="form-heading">Add expense</h1></div>
+
+      <form class="card form-card" id="expense-form">
+        <input type="hidden" id="f-id">
+        <div class="field">
+          <label for="f-title">Title</label>
+          <input type="text" id="f-title" required placeholder="e.g. Auto rickshaw">
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-amount">Amount (₹)</label>
+            <input type="number" id="f-amount" min="0.01" step="0.01" required placeholder="0.00">
+          </div>
+          <div class="field">
+            <label for="f-category">Category</label>
+            <select id="f-category">
+              {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-date">Date</label>
+          <input type="date" id="f-date" required>
+        </div>
+        <div class="field">
+          <label for="f-note">Note <span class="hint">(optional)</span></label>
+          <textarea id="f-note" rows="3" placeholder="Anything worth remembering about this one"></textarea>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <button type="submit" class="btn btn-primary" id="form-submit-btn">Save expense</button>
+          <button type="button" class="btn btn-ghost" id="form-clear-btn">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============================ ALL EXPENSES VIEW =========================== -->
+    <section class="view" id="view-all">
+      <div class="page-header"><h1>All expenses</h1></div>
+
+      <div class="card filter-bar">
+        <div class="field grow">
+          <label for="filter-search">Search</label>
+          <input type="text" id="filter-search" placeholder="Title or note…">
+        </div>
+        <div class="field">
+          <label for="filter-category">Category</label>
+          <select id="filter-category">
+            <option value="All">All</option>
+            {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="filter-from">From</label>
+          <input type="date" id="filter-from">
+        </div>
+        <div class="field">
+          <label for="filter-to">To</label>
+          <input type="date" id="filter-to">
+        </div>
+        <button class="btn btn-primary" id="filter-apply-btn">Filter</button>
+        <button class="btn btn-ghost" id="filter-reset-btn">Reset</button>
+      </div>
+
+      <div class="card table-card">
+        <table class="ledger">
+          <thead>
+            <tr><th>Date</th><th>Title</th><th>Category</th><th>Amount</th><th>Note</th><th></th></tr>
+          </thead>
+          <tbody id="all-body"></tbody>
+        </table>
+        <div class="empty-state" id="all-empty" style="display:none;">
+          <div class="big">🔍</div>
+          No expenses match these filters.
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================== REPORTS VIEW ============================= -->
+    <section class="view" id="view-reports">
+      <div class="page-header"><h1>Reports</h1></div>
+      <div class="chart-row">
+        <div class="card chart-card">
+          <h3>Spending by category</h3>
+          <canvas id="pie-chart"></canvas>
+          <div class="empty-state" id="pie-empty" style="display:none;">No data yet.</div>
+        </div>
+        <div class="card chart-card">
+          <h3>Last 6 months</h3>
+          <canvas id="bar-chart"></canvas>
+          <div class="empty-state" id="bar-empty" style="display:none;">No data yet.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

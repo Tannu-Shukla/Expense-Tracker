@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Setup needed — ExpenseFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .box { max-width: 460px; text-align: center; padding: 40px; }
+  .box h1 { font-size: 22px; margin-bottom: 12px; }
+  .box p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+  .box pre {
+    text-align: left; background: var(--paper-dim); padding: 14px;
+    border-radius: 8px; font-size: 12.5px; white-space: pre-wrap;
+    margin: 18px 0; color: var(--rose);
+  }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>Database isn't connected yet</h1>
+    <p>Open <strong>config.py</strong> and fill in your PostgreSQL database name, username and password, then restart the app.</p>
+    <pre>{{ error }}</pre>
+  </div>
+</body>
+</html>
